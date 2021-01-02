@@ -1,0 +1,6 @@
+[webserver]
+192.168.43.81 ansible_ssh_user=root ansible_ssh_pass=mhk ssh_connection=ssh
+192.168.43.191  ansible_ssh_user=root ansible_ssh_pass=mhk ssh_connection=ssh
+
+[lb]
+192.168.43.78 ansible_ssh_user=root ansible_ssh_pass=rhel ssh_connection=ssh

@@ -1,0 +1,66 @@
+- hosts: all
+  vars_prompt:
+        - name: dir
+          prompt: " which name you want to give?"
+  tasks:
+        - file:
+            state: directory
+            path: "/{{dir}}"
+        - mount:
+            src: "/dev/cdrom"
+            path: "/{{dir}}"
+            state: mounted
+            fstype: "iso9660"
+        - yum_repository: 
+            baseurl: "/{{dir}}/AppStream"
+            name: "dvd1"
+            description: "myyumdvd"
+            gpgcheck: no
+        - yum_repository:
+            baseurl: "/{{dir}}/BaseOS"
+            name: "dvd2"
+            description: "myyumdvd"
+            gpgcheck: no
+        - service:
+            name: firewalld
+            state: stopped
+        - selinux:
+            policy: targeted
+            state: permissive
+
+- hosts: webserver
+  tasks:   
+
+
+        - package:
+            name: httpd 
+            state: present
+        - package:
+            name: php 
+            state: present
+        - package:
+            name: net-tools 
+            state: present
+        - copy: 
+            src: "index.php"
+            dest: "/var/www/html/index.php"
+        - service:
+            name: httpd
+            state: restarted
+             
+- hosts: lb
+  tasks:
+         
+        - package:
+            name: haproxy 
+            state: present
+        - template:
+            src: haproxy.cfg
+            dest: /etc/haproxy/haproxy.cfg
+        - service:
+            name: haproxy
+            state: restarted
+
+
+
+
